@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+    <style>
+        #root{
+            width: 100%;
+            height: 100svh;
+            overflow: hidden;
+
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            
+            gap: 10px;
+        }
+        input{
+            font-size: 2rem;
+        }
+        .flex-row{
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: center;
+
+            gap: 10px
+        }
+        button{
+            width: 100px;
+            padding: 10px;
+            font-size: 1rem;
+        }
+        #definition{
+            font-size: 2rem;
+            text-align: center;
+            width: 90%;
+            height: calc(2rem + 5px);
+        }
+    </style>
+</head>
+<body>
+    <div id="root">
+        <input type="text" id="korean-input" value="안녕">
+        <div class="flex-row">
+            <button type="submit" onclick="Search()">Search</button>
+            <button type="submit" onclick="Listen()"> Listen </button>
+        </div>
+        <p id="definition"></p>
+    </div>
+    
+    <script src="https://code.responsivevoice.org/responsivevoice.js?key=cRZzyOA7"></script>
+    <script>
+        
+
+        const Search = () => {
+            
+            const URL = `https://krdict.korean.go.kr/api/search?key=4F7A9418480156AF8F02E623081275A9&q=${document.getElementById('korean-input').value}&sort=dict&translated=y&trans_lang=1`;
+
+            
+
+            fetch(URL)
+            .then(response => response.text())
+            .then(xmlString => {
+                const parser = new DOMParser();
+                const xmlDoc = parser.parseFromString(xmlString, 'text/xml');
+
+                // Now you can work with the XML document
+                // For example, to access elements in the XML document:
+                const elements = xmlDoc.getElementsByTagName('trans_word');
+
+                document.getElementById('definition').innerText = elements[0].textContent.split(';')[0]
+            })
+        }
+
+        const Listen = () => {
+            responsiveVoice.speak(`${document.getElementById('korean-input').value}`,`Korean Male`);
+        }
+
+   
+    </script>
+</body>
+</html>
